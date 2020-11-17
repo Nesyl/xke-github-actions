@@ -29,3 +29,12 @@ jobs:
     - run: npm run build
     - name: docker_test
       run: docker build -t nesyl/nginxdocker:latest .
+    - name: Log in to docker registry
+      uses: docker/login-action@v1
+      with: 
+        username: ${{secrets.USERNAME.DOCKER}}
+        password: ${{secrets.PASSWORD.DOCKER}}
+    - run: echo "tag$=(git branch --show-current)_$(git log -n1 --format format:\"%H\")" >> $GITHUB_ENV
+    - run: dockerbuild -t nesyl/xebxke:${{env.tag}} .
+    - run: docker push nesyl/xebxke:${{env.tag}}
+      
